@@ -1,0 +1,23 @@
+{
+    "name": "word-nerd",
+    "author": "dw-webdev <david@dw-webdev.com>",
+    "description": "A recreation of a mobile game from around 2011 known as \"Mole Word/Word Weasel\" that I helped code while at a previous job.",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "word-nerd"
+    },
+    "dependencies": {
+        "phaser": "^3.70.0"
+    },
+    "devDependencies": {
+        "parcel": "^2.10.3",
+        "process": "^0.11.10"
+    },
+    "source": "src/index.html",
+    "scripts": {
+        "start": "parcel",
+        "build": "parcel build",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}
