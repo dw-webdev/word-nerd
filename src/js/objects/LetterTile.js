@@ -8,12 +8,16 @@ export default class LetterTile extends Phaser.GameObjects.Container {
 
         super(scene, x, y);
 
-        this.tile = this.scene.add.graphics();
-        this.tile.fillStyle(0x404040, 1.0);
-        this.tile.fillRoundedRect(0, 0, 75, 75, 15);
+        this.tile = this.scene.add.sprite(0, 0, 'letter-tile');
+        this.tile.setOrigin(0, 0);
         this.add(this.tile);
+
+        //this.tile = this.scene.add.graphics();
+        //this.tile.fillStyle(0x404040, 1.0);
+        //this.tile.fillRoundedRect(0, 0, 75, 75, 15);
+        //this.add(this.tile);
         
-        this.letter = this.scene.add.text(37.5, 0, this.pickLetter(), { font: ' 85px "Courier New", monospace' });
+        this.letter = this.scene.add.text(42.5, 5, this.pickLetter(), { font: ' 85px "Courier New", monospace' });
         this.letter.setOrigin(0.5, 0);
         this.add(this.letter);
     }

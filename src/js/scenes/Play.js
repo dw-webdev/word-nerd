@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 import LetterTile from '../objects/LetterTile.js';
+import imgLetterTile from '../../img/letter-tile.png';
 
-const GRID_X = 20;
-const GRID_Y = 20;
+const GRID_X = 15;
+const GRID_Y = 15;
 const GRID_WIDTH = 6;
 const GRID_HEIGHT = 6;
 const GRID_SPACE_X = 85;
@@ -12,6 +13,7 @@ export default class Menu extends Phaser.Scene {
 
     preload() {
 
+        this.load.spritesheet('letter-tile', imgLetterTile, { frameWidth: 85, frameHeight: 85, endFrame: 2 });
     }
 
     create() {
