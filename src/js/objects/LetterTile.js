@@ -10,16 +10,12 @@ const TimerState = {
 
 export default class LetterTile extends Phaser.GameObjects.Container {
 
-    constructor(scene, x, y, index) {
+    constructor(scene, x, y, selectCallback) {
 
         super(scene, x, y);
 
         this.tile = this.scene.add.sprite(0, 0, 'letter-tile');
         this.tile.setOrigin(0, 0);
-        this.tile.setInteractive();
-        this.tile.setData('index', index);
-        this.tile.setData('selected', false);
-        this.tile.on('pointerdown', this.onClick);
         this.add(this.tile);
 
         this.timerGraphic = this.scene.add.graphics();
@@ -35,6 +31,11 @@ export default class LetterTile extends Phaser.GameObjects.Container {
         this.timerCurrent = 0;
         this.timerLimit = 0;
         this.timerState = TimerState.NONE;
+        this.selected = false;
+        this.selectCallback = selectCallback;
+
+        this.setInteractive(new Phaser.Geom.Rectangle(0, 0, 75, 75), Phaser.Geom.Rectangle.Contains);
+        this.on('pointerdown', this.onClick);
 
         this.refresh();
     }
@@ -66,8 +67,7 @@ export default class LetterTile extends Phaser.GameObjects.Container {
             this.timerState = TimerState.COUNT_DOWN;
         }
 
-        const selected = this.tile.getData('selected');
-        this.tile.setFrame(this.timerState === TimerState.COUNT_UP ? 4 : this.timerState === TimerState.COUNT_DOWN ? selected ? 3 : 2 : selected ? 1 : 0);
+        this.tile.setFrame(this.timerState === TimerState.COUNT_UP ? 4 : this.timerState === TimerState.COUNT_DOWN ? this.selected ? 3 : 2 : this.selected ? 1 : 0);
 
         this.timerGraphic.clear();
         if(this.timerCurrent > 0) {
@@ -90,7 +90,15 @@ export default class LetterTile extends Phaser.GameObjects.Container {
 
     onClick(_) {
 
-        console.log(this.getData('index'));
-        this.setData('selected', !this.getData('selected'));
+        if(!this.selected && this.timerState !== TimerState.COUNT_UP) {
+
+            this.selected = true;
+            this.selectCallback(this.letter.text);
+        }
+    }
+
+    deselect() {
+
+        this.selected = false;
     }
 }
