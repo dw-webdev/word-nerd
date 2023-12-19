@@ -10,7 +10,7 @@ const TimerState = {
 
 export default class LetterTile extends Phaser.GameObjects.Container {
 
-    constructor(scene, x, y, selectCallback) {
+    constructor(scene, x, y, selectCallback, timeoutCallback) {
 
         super(scene, x, y);
 
@@ -33,6 +33,7 @@ export default class LetterTile extends Phaser.GameObjects.Container {
         this.timerState = TimerState.NONE;
         this.selected = false;
         this.selectCallback = selectCallback;
+        this.timeoutCallback = timeoutCallback;
 
         this.setInteractive(new Phaser.Geom.Rectangle(0, 0, 75, 75), Phaser.Geom.Rectangle.Contains);
         this.on('pointerdown', this.onClick);
@@ -59,6 +60,7 @@ export default class LetterTile extends Phaser.GameObjects.Container {
                 this.timerCurrent = 0;
                 this.timerLimit = 15000;
                 this.timerState = TimerState.COUNT_UP;
+                if(this.selected) this.timeoutCallback();
             }
         }
         if(this.timerState === TimerState.NONE && Math.random() < 0.00005) {

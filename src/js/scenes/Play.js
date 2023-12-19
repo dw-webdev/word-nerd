@@ -29,7 +29,7 @@ export default class Play extends Phaser.Scene {
         this.tiles = [];
         for(let i = 0, l = GRID_WIDTH * GRID_HEIGHT; i < l; i++) {
 
-            this.tiles[i] = new LetterTile(this, (i % GRID_WIDTH) * GRID_SPACE_X + GRID_X, Math.floor(i / GRID_HEIGHT) * GRID_SPACE_Y + GRID_Y, this.clickTile.bind(this));
+            this.tiles[i] = new LetterTile(this, (i % GRID_WIDTH) * GRID_SPACE_X + GRID_X, Math.floor(i / GRID_HEIGHT) * GRID_SPACE_Y + GRID_Y, this.clickTile.bind(this), this.onTimeout.bind(this));
             this.add.existing(this.tiles[i]);
         }
     }
@@ -50,5 +50,12 @@ export default class Play extends Phaser.Scene {
 
         this.tiles.forEach(tile => tile.deselect());
         this.word.text = "";
+    }
+
+    onTimeout() {
+
+        console.log('timeout');
+
+        this.clearWord();
     }
 }
