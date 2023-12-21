@@ -39,6 +39,8 @@ export default class Play extends Phaser.Scene {
             this.tiles[i] = new LetterTile(this, (i % GRID_WIDTH) * GRID_SPACE_X + GRID_X, Math.floor(i / GRID_HEIGHT) * GRID_SPACE_Y + GRID_Y, this.clickTile.bind(this), this.onTimeout.bind(this));
             this.add.existing(this.tiles[i]);
         }
+
+        this.tilesClicked = [];
     }
 
     update(time, delta) {
@@ -46,9 +48,18 @@ export default class Play extends Phaser.Scene {
         this.tiles.forEach(tile => tile.update(time, delta));
     }
 
-    clickTile(letter) {
+    clickTile(tile) {
 
-        this.word.text += letter;
+        if(this.tilesClicked[this.tilesClicked.length - 1] === tile) {
+            tile.deselect();
+            this.tilesClicked.pop();
+        }
+        else if(!tile.isSelected()) {
+            tile.select();
+            this.tilesClicked.push(tile);
+        }
+
+        this.word.text = this.tilesClicked.reduce((word, tile) => word + tile.getLetter(), '');
 
         if(this.word.text.length < MIN_WORD_LENGTH) {
             this.result.text = "Must be at least 3 letters";
@@ -75,6 +86,7 @@ export default class Play extends Phaser.Scene {
     clearWord() {
 
         this.tiles.forEach(tile => tile.deselect());
+        this.tilesClicked.length = 0;
         this.word.text = "";
         this.result.text = "Must be at least 3 letters";
     }

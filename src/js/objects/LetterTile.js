@@ -92,15 +92,28 @@ export default class LetterTile extends Phaser.GameObjects.Container {
 
     onClick(_) {
 
-        if(!this.selected && this.timerState !== TimerState.COUNT_UP) {
-
-            this.selected = true;
-            this.selectCallback(this.letter.text);
+        if(this.timerState !== TimerState.COUNT_UP) {
+            this.selectCallback(this);
         }
+    }
+
+    select() {
+
+        this.selected = true;
     }
 
     deselect() {
 
         this.selected = false;
+    }
+
+    isSelected() {
+
+        return this.selected;
+    }
+
+    getLetter() {
+
+        return this.letter.text;
     }
 }
