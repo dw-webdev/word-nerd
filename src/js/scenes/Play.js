@@ -10,7 +10,7 @@ const GRID_HEIGHT = 6;
 const GRID_SPACE_X = 85;
 const GRID_SPACE_Y = 85;
 
-const MIN_WORD_LENGTH = 5;
+const MIN_WORD_LENGTH = 3;
 
 export default class Play extends Phaser.Scene {
 
@@ -30,7 +30,7 @@ export default class Play extends Phaser.Scene {
         this.buttonClear.setInteractive();
         this.buttonClear.on('pointerdown', this.clearWord.bind(this));
 
-        this.result = this.add.text(270, 100, "Must be at least 5 letters", { font: ' 32px "Courier New", monospace' });
+        this.result = this.add.text(270, 100, "Must be at least 3 letters", { font: ' 32px "Courier New", monospace' });
         this.result.setOrigin(0.5, 0);
 
         this.tiles = [];
@@ -51,7 +51,7 @@ export default class Play extends Phaser.Scene {
         this.word.text += letter;
 
         if(this.word.text.length < MIN_WORD_LENGTH) {
-            this.result.text = "Must be at least 5 letters";
+            this.result.text = "Must be at least 3 letters";
         }
         else {
             const valid = this.checkWord(this.word.text);
@@ -76,7 +76,7 @@ export default class Play extends Phaser.Scene {
 
         this.tiles.forEach(tile => tile.deselect());
         this.word.text = "";
-        this.result.text = "Must be at least 5 letters";
+        this.result.text = "Must be at least 3 letters";
     }
 
     onTimeout() {
