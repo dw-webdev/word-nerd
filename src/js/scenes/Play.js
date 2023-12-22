@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import LetterTile from '../objects/LetterTile.js';
 import imgLetterTile from '../../img/letter-tile.png';
 import dictionary from '../../data/dictionary.json';
+import score from '../../data/score.json';
 
 const GRID_X = 15;
 const GRID_Y = 165;
@@ -18,6 +19,7 @@ export default class Play extends Phaser.Scene {
 
         this.load.spritesheet('letter-tile', imgLetterTile, { frameWidth: 85, frameHeight: 85, endFrame: 4 });
         this.load.json('dictionary', dictionary);
+        this.load.json('score', score);
     }
 
     create() {
@@ -30,8 +32,10 @@ export default class Play extends Phaser.Scene {
         this.buttonClear.setInteractive();
         this.buttonClear.on('pointerdown', this.clearWord.bind(this));
 
-        this.result = this.add.text(270, 100, "Must be at least 3 letters", { font: ' 32px "Courier New", monospace' });
+        this.result = this.add.text(270, 100, "", { font: ' 32px "Courier New", monospace' });
         this.result.setOrigin(0.5, 0);
+        this.result.setInteractive();
+        this.result.on('pointerdown', this.submitWord.bind(this));
 
         this.tiles = [];
         for(let i = 0, l = GRID_WIDTH * GRID_HEIGHT; i < l; i++) {
@@ -62,11 +66,11 @@ export default class Play extends Phaser.Scene {
         this.word.text = this.tilesClicked.reduce((word, tile) => word + tile.getLetter(), '');
 
         if(this.word.text.length < MIN_WORD_LENGTH) {
-            this.result.text = "Must be at least 3 letters";
+            this.result.text = "";
         }
         else {
             const valid = this.checkWord(this.word.text);
-            this.result.text = valid ? "Valid" : "Invalid";
+            this.result.text = valid ? (this.getScore(this.word.text) + " Points") : "";
         }
     }
 
@@ -76,11 +80,11 @@ export default class Play extends Phaser.Scene {
 
         let dict = this.cache.json.get('dictionary');
 
-       if(!dict[word.charAt(0)]) return false;
-       if(!dict[word.charAt(0)][word.charAt(1)]) return false;
-       if(!dict[word.charAt(0)][word.charAt(1)][word.charAt(2)]) return false;
+        if(!dict[word.charAt(0)]) return false;
+        if(!dict[word.charAt(0)][word.charAt(1)]) return false;
+        if(!dict[word.charAt(0)][word.charAt(1)][word.charAt(2)]) return false;
 
-       return dict[word.charAt(0)][word.charAt(1)][word.charAt(2)].includes(word);
+        return dict[word.charAt(0)][word.charAt(1)][word.charAt(2)].includes(word);
     }
 
     clearWord() {
@@ -88,7 +92,7 @@ export default class Play extends Phaser.Scene {
         this.tiles.forEach(tile => tile.deselect());
         this.tilesClicked.length = 0;
         this.word.text = "";
-        this.result.text = "Must be at least 3 letters";
+        this.result.text = "";
     }
 
     onTimeout() {
@@ -96,5 +100,24 @@ export default class Play extends Phaser.Scene {
         console.log('timeout');
 
         this.clearWord();
+    }
+
+    getScore(word) {
+
+        let score = 0;
+        const data = this.cache.json.get('score');
+        for(let i = 0, l = word.length; i < l; i++) {
+            score += data[word.charAt(i)];
+        }
+        return score;
+    }
+
+    submitWord() {
+        
+        if(this.checkWord(this.word.text)) {
+
+            this.tilesClicked.forEach(tile => tile.refresh());
+            this.clearWord();
+        }
     }
 }
